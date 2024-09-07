@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      - MYSQL_USER=myuser
+      - MYSQL_PASSWORD=mypass
+      - MYSQL_ROOT_PASSWORD=myroot
+      - MYSQL_DATABASE=Test
+    volumes:
+      - /var/lib/mysql
+    
+  controllerapi:
+    image: ${DOCKER_REGISTRY-}controllerapi
+    build:
+      context: .
+      dockerfile: src/Presentation/ControllerAPI/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__Test=Server=mysql;Database=Test;User Id=myuser;Password=mypass 
+    depends_on:
+      - mysql
+ 
